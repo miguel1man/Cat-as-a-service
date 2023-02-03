@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 
 const CAT_ENDPOINT_RANDOM_FACT = 'https://catfact.ninja/fact'
-// const CAT_PREFIX_IMAGE_URL = 'https://api.thecatapi.com/v1/images/search'
+const PREFIX_IMAGE_URL = 'http://api.giphy.com/v1/gifs/search?q=cat&api_key=y3hnhA4Cp8ZGBCg5fUJw0AozF9KsPvex&limit=3'
 
 export function App () {
   const [fact, setFact] = useState()
-  const [url, setUrl] = useState()
+  const [urlImage, setUrlImage] = useState()
 
   useEffect(() => {
     fetch(CAT_ENDPOINT_RANDOM_FACT)
@@ -14,16 +14,11 @@ export function App () {
         const { fact } = data
         setFact(fact)
 
-        const threeFirstWords = fact.split(' ', 3)
-        console.log(threeFirstWords)
-
-        // fetch('https://api.unsplash.com/search/photos?page=1&query=office&client_id=Q-suRYnwxxXMZqiT_7TKPum4_WORM_FkIlyc9DS_FtU')
-        fetch('https://api.thecatapi.com/v1/images/search')
+        fetch(PREFIX_IMAGE_URL)
           .then(res => res.json())
-          .then(data => {
-            const { url } = data[0]
-            setUrl(url)
-            console.log(url)
+          .then(response => {
+            const { url } = response.data[0].images.original
+            setUrlImage(url)
           })
       })
   }, [])
@@ -32,7 +27,7 @@ export function App () {
     <main>
       <h1>App de gatitos</h1>
       {fact && <p>{fact}</p>}
-      <img src={url} alt='Image extracted from the first three words' />
+      <img src={urlImage} alt='Image extracted from the first three words' />
     </main>
   )
 }
